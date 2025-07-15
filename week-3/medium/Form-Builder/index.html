@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Form Builder</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f4f6f8;
+      margin: 0;
+      padding: 20px;
+    }
+
+    .container {
+      max-width: 900px;
+      margin: auto;
+    }
+
+    h1 {
+      text-align: center;
+      color: #333;
+    }
+
+    .builder-panel {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 20px;
+      margin-top: 30px;
+    }
+
+    .controls {
+      flex: 1 1 250px;
+      background: white;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 0 8px rgba(0,0,0,0.1);
+    }
+
+    .controls select,
+    .controls input[type="text"],
+    .controls button {
+      width: 100%;
+      padding: 10px;
+      font-size: 16px;
+      margin-bottom: 15px;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+    }
+
+    .controls button {
+      background-color: #007bff;
+      color: white;
+      border: none;
+      cursor: pointer;
+    }
+
+    .controls button:hover {
+      background-color: #0056b3;
+    }
+
+    .form-preview {
+      flex: 2 1 500px;
+      background: white;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 0 8px rgba(0,0,0,0.1);
+    }
+
+    .form-preview h2 {
+      margin-top: 0;
+      border-bottom: 1px solid #ddd;
+      padding-bottom: 10px;
+    }
+
+    .field {
+      margin-bottom: 15px;
+    }
+
+    .field input[type="text"] {
+      width: 100%;
+      padding: 8px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Form Builder</h1>
+
+    <div class="builder-panel">
+      <div class="controls">
+        <label for="fieldType">Field Type:</label>
+        <select id="fieldType">
+          <option value="text">Text Input</option>
+          <option value="checkbox">Checkbox</option>
+          <option value="radio">Radio Button</option>
+        </select>
+
+        <label for="fieldLabel">Label:</label>
+        <input type="text" id="fieldLabel" placeholder="Enter label (e.g., Full Name)" />
+
+        <button onclick="addField()">Add Field</button>
+      </div>
+
+      <div class="form-preview" id="formPreview">
+        <h2>Form Preview</h2>
+        <!-- Fields will be added here -->
+      </div>
+    </div>
+  </div>
+
+  <script>
+    function addField() {
+      const type = document.getElementById("fieldType").value;
+      const labelText = document.getElementById("fieldLabel").value.trim();
+      const formPreview = document.getElementById("formPreview");
+
+      if (!labelText) {
+        alert("Please enter a label for the field.");
+        return;
+      }
+
+      const fieldWrapper = document.createElement("div");
+      fieldWrapper.className = "field";
+
+      const label = document.createElement("label");
+      label.innerText = labelText;
+
+      let input;
+      switch (type) {
+        case "text":
+          input = document.createElement("input");
+          input.type = "text";
+          input.placeholder = labelText;
+          break;
+        case "checkbox":
+          input = document.createElement("input");
+          input.type = "checkbox";
+          break;
+        case "radio":
+          input = document.createElement("input");
+          input.type = "radio";
+          input.name = "radioGroup"; // all radio buttons share a group
+          break;
+      }
+
+      fieldWrapper.appendChild(label);
+      fieldWrapper.appendChild(document.createElement("br"));
+      fieldWrapper.appendChild(input);
+      formPreview.appendChild(fieldWrapper);
+
+      // Clear the label input
+      document.getElementById("fieldLabel").value = "";
+    }
+  </script>
+</body>
+</html>
