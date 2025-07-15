@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Pokémon</title>
+</head>
+<style>
+    h1 {
+        text-align: center;
+    }
+
+    .container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    input[type="number"],
+    select,
+    button {
+        padding: 12px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        font-size: 16px;
+        margin-right: 5px;
+    }
+
+    .card {
+        background: white;
+        border-radius: 8px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        padding: 10px;
+        width: 160px;
+        text-align: center;
+        margin: 10px;
+    }
+
+    .card img {
+        width: 100px;
+        height: 100px;
+    }
+
+    .type {
+        font-size: 0.9rem;
+        color: gray;
+    }
+
+    #card {
+        margin-top: 10px;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 20px;
+        justify-content: center;
+        align-items: center;
+    }
+</style>
+
+<body>
+    <h1>The Pokémon</h1>
+    <div class="container">
+        <input type="number" id="count" placeholder="Number of Pokémon" min="1" />
+        <select id="category">
+            <option value="">Select Type</option>
+            <option value="fire">Fire</option>
+            <option value="water">Water</option>
+            <option value="grass">Grass</option>
+            <option value="electric">Electric</option>
+            <option value="flying">Flying</option>
+            <option value="poison">Poison</option>
+            <option value="bug">Bug</option>
+            <option value="normal">Normal</option>
+        </select>
+        <button id="loadBtn">Get Pokémon</button>
+    </div>
+    <div id="card"></div>
+    <script>
+        const loadBtn = document.getElementById('loadBtn');
+        const cardContainer = document.getElementById('card');
+
+        loadBtn.addEventListener('click', async () => {
+            const count = parseInt(document.getElementById('count').value);
+            const type = document.getElementById('category').value;
+            cardContainer.innerHTML = '';
+
+            if (!count || !type) {
+                alert("Please enter a number and select a type.");
+                return;
+            }
+
+            let found = 0;
+            let id = 1;
+
+            while (found < count && id <= 1000) {
+                const res = await fetch(`https://pokeapi.co/api/v2/pokemon/${id}`);
+                const data = await res.json();
+
+                const pokemonTypes = data.types.map(t => t.type.name);
+
+                if (pokemonTypes.includes(type)) {
+                    const card = document.createElement('div');
+                    card.className = 'card';
+                    card.innerHTML = `
+                <img src='${data.sprites.front_default}' alt="${data.name}"/>
+                <h3>${data.name}</h3>
+                <div>Type:${pokemonTypes.join('')}</div>
+                `;
+                    cardContainer.appendChild(card);
+                    found++;
+                }
+                id++;
+            }
+
+            if (found === 0) {
+                cardContainer.innerHTML = `<p>"No Pokemon found with type " ${type}</p> `
+            }
+
+        })
+    </script>
+</body>
+
+</html>

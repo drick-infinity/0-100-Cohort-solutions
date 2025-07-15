@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz app</title>
+</head>
+<style>
+    *{
+        box-sizing: border-box;
+    }
+    body{
+      font-family: 'Segoe UI', sans-serif;
+      background-color: #f1f1f1;
+      margin:0;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+    .quiz-container{
+      background: white;
+      border-radius: 10px;
+      padding: 4rem;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+    ul{
+        list-style-type: none;
+    }
+    .result {
+      text-align: center;
+    }
+
+    .result h2 {
+      margin-bottom: 1rem;
+    }
+
+    .result button {
+      background: #3498db;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    .result button:hover {
+      background: #2980b9;
+    }
+    #submit{
+      background: #3498db;
+      margin-top: 10px;
+      color: white;
+      border: none;
+      width: 100%;
+      padding: 10px 20px;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    #submit:hover{
+        background: #2980b9;
+    }
+    </style>
+<body>
+    <div class="quiz-container" id="quiz">
+        <h2 id="question">Loading...</h2>
+        <ul id="answer-list"></ul>
+        <button id="submit">Submit</button>
+    </div>
+<script type="module">
+    import {quizData} from './data.js';
+
+    const quizEl = document.getElementById('quiz');
+    const questionEl = document.getElementById('question');
+    const answerListEl = document.getElementById('answer-list');
+    const submitBtn = document.getElementById('submit');
+
+    let currentQuiz=0;
+    let score = 0;
+
+    function loadQuiz(){
+        const currentQ = quizData[currentQuiz];
+        questionEl.innerText = currentQ.question;
+        const options = ['a','b','c','d'];
+        answerListEl.innerHTML = options.map(letter =>
+            `<li>
+                <label>
+                <input type="radio" name="answer" value="${letter}"/>
+                ${currentQ[letter]}
+                </label>
+                </li>`).join('');
+    }
+
+function getSelectedAnswer(){
+    const selected = document.querySelector('input[name="answer"]:checked');
+    if (selected) {
+        return selected.value;
+    }
+    return undefined;
+}
+
+function showResult(){
+    quizEl.innerHTML = `
+    <div class="result"> 
+        <h2>You answered ${score} out of ${quizData.length} correctly</h2>   
+    <button onclick="location.reload()">Restart Quiz</button>
+    </div>
+        `
+}
+
+submitBtn.addEventListener('click',() =>{
+    const answer = getSelectedAnswer();
+
+    if(!answer){
+        alert("Please select an answer before submitting");
+        return;
+    }
+
+    if(answer === quizData[currentQuiz].correct){
+        score++;
+    }
+    currentQuiz++;
+    if(currentQuiz <quizData.length){
+        loadQuiz();
+    }else{
+        showResult();
+    }
+})
+
+loadQuiz();
+
+</script>
+</body>
+</html>
